@@ -44,7 +44,7 @@ const addBookHandler = (request, h) => {
     response = h.response({
       status: "fail",
       message:
-        "Gagal menambahkan buku. readPage tidak boleh lebih besar dari pageCoun",
+        "Gagal menambahkan buku. readPage tidak boleh lebih besar dari pageCount",
     });
     response.code(400);
     return response;
@@ -66,4 +66,37 @@ const addBookHandler = (request, h) => {
   }
 };
 
-module.exports = { addBookHandler };
+const getAllBooksHandler = () => ({
+  status: "success",
+  data: {
+    books: books.map((book) => ({
+      id: book.id,
+      name: book.name,
+      publisher: book.publisher,
+    })),
+  },
+});
+
+const getBookByIdHandler = (request, h) => {
+  const { id } = request.params;
+
+  const book = books.find((n) => n.id === id);
+
+  if (book !== undefined) {
+    return {
+      status: "success",
+      data: {
+        book,
+      },
+    };
+  }
+
+  const response = h.response({
+    status: "fail",
+    message: "Buku tidak ditemukan",
+  });
+  response.code(404);
+  return response;
+};
+
+module.exports = { addBookHandler, getAllBooksHandler, getBookByIdHandler };
